@@ -58,19 +58,25 @@ class GomokuGame:
             for j in range(2, self.n + 1):
                 if self.grid[i][j] != ' ':
                     color = (255, 255, 255) if self.grid[i][j] == 'W' else (0, 0, 0)
-                    pygame.draw.circle(self.screen, (100, 100, 100), (i * self.block_size, j * self.block_size), (self.block_size // 2) - 2)
-                    pygame.draw.circle(self.screen, color, (i * self.block_size, j * self.block_size), (self.block_size // 2) - 4)
 
     def ai_move(self):
         if self.turn:  # White
             i, j = minimax_move(self.grid, is_white=True)
             self.grid[i][j] = 'W'
-        else:  # Black
+            pygame.draw.circle(self.screen, (100, 100, 100), (i * self.block_size, j * self.block_size),
+                               (self.block_size // 2) - 2)
+            pygame.draw.circle(self.screen, (255, 255, 255), (i * self.block_size, j * self.block_size),
+                               (self.block_size // 2) - 4)
+        else:
             if self.mode == "ai_vs_ai":
                 i, j = alphabeta_move(self.grid, is_white=False)
             else:
                 i, j = minimax_move(self.grid, is_white=False)
             self.grid[i][j] = 'B'
+            pygame.draw.circle(self.screen, (100, 100, 100), (i * self.block_size, j * self.block_size),
+                               (self.block_size // 2) - 2)
+            pygame.draw.circle(self.screen, (0, 0, 0), (i * self.block_size, j * self.block_size),
+                               (self.block_size // 2) - 4)
 
         self.turn = not self.turn
 
@@ -83,9 +89,8 @@ class GomokuGame:
 
     def run(self):
         clock = pygame.time.Clock()
-
+        self.draw_board()
         while self.running:
-            self.draw_board()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -97,6 +102,10 @@ class GomokuGame:
                         i, j = round(x / self.block_size), round(y / self.block_size)
                         if 1 < i < self.n and 1 < j < self.n and self.grid[i][j] == ' ':
                             self.grid[i][j] = 'W'
+                            pygame.draw.circle(self.screen, (100, 100, 100), (i * self.block_size, j * self.block_size),
+                                               (self.block_size // 2) - 2)
+                            pygame.draw.circle(self.screen, (255,255,255), (i * self.block_size, j * self.block_size),
+                                               (self.block_size // 2) - 4)
                             if self.full() and not self.won:
                                 text_surface = self.font.render("It's a Draw!", True, (255, 255, 255))
                                 self.screen.blit(text_surface, ((self.width // 2.5), (self.block_size // 2)))
