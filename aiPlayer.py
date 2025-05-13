@@ -1,7 +1,7 @@
 import copy
 DEPTH = 2
 DIRECTIONS = [(1, 0), (0, 1), (1, 1), (1, -1)]
-N = 9
+N = 17
 def get_available_moves(grid):
     moves = []
     for i in range(2, N):
@@ -10,7 +10,7 @@ def get_available_moves(grid):
                 for dx, dy in DIRECTIONS:
                     for d in [-1, 1]:
                         ni, nj = i + dx * d, j + dy * d
-                        if 1 <= ni <= N and 1 <= nj <= N and grid[ni][nj] != ' ':
+                        if 2 <= ni < N and 2 <= nj < N and grid[ni][nj] != ' ':
                             moves.append((i, j))
                             break
                     else:
@@ -44,13 +44,13 @@ def evaluate_board(grid, player):
     total_score = 0
 
     # Horizontal, vertical, and diagonal
-    for i in range(1, N + 1):
-        for j in range(1, N + 1):
+    for i in range(2, N):
+        for j in range(2, N):
             for dx, dy in DIRECTIONS:
                 line = []
                 for k in range(5):
                     ni, nj = i + dx * k, j + dy * k
-                    if 1 <= ni <= N and 1 <= nj <= N:
+                    if 2 <= ni <= N and 2 <= nj <= N:
                         line.append(grid[ni][nj])
                 if len(line) == 5:
                     total_score += evaluate_line(line, player)
