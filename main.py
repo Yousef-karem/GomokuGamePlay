@@ -16,6 +16,7 @@ buttons = [
     {"label": "AI vs AI", "rect": pygame.Rect(100, 160, 200, 50), "mode": "ai_vs_ai"},
 ]
 
+
 def draw_menu():
     screen.fill((245, 245, 245))
     for button in buttons:
@@ -26,6 +27,7 @@ def draw_menu():
         text_rect = text.get_rect(center=button["rect"].center)
         screen.blit(text, text_rect)
     pygame.display.flip()
+
 
 running = True
 while running:

@@ -1,8 +1,10 @@
 import pygame
-from aiPlayer import minimax_move, alphabeta_move
+from aiPlayer import minimax_move, getAlphaBetaMove
+
 N = 17
 DEPTH = 2
 DIRECTIONS = [(1, 0), (0, 1), (1, 1), (1, -1)]
+
 
 class GomokuGame:
     def __init__(self, mode="human_vs_ai"):
@@ -61,7 +63,7 @@ class GomokuGame:
 
     def ai_move(self):
         if self.turn:  # White
-            i, j = minimax_move(self.grid, is_white=True)
+            i, j = getAlphaBetaMove(self.grid, is_white=True)
             self.grid[i][j] = 'W'
             pygame.draw.circle(self.screen, (100, 100, 100), (i * self.block_size, j * self.block_size),
                                (self.block_size // 2) - 2)
@@ -69,9 +71,9 @@ class GomokuGame:
                                (self.block_size // 2) - 4)
         else:
             if self.mode == "ai_vs_ai":
-                i, j = alphabeta_move(self.grid, is_white=False)
-            else:
                 i, j = minimax_move(self.grid, is_white=False)
+            else:
+                i, j = getAlphaBetaMove(self.grid, is_white=False)
             self.grid[i][j] = 'B'
             pygame.draw.circle(self.screen, (100, 100, 100), (i * self.block_size, j * self.block_size),
                                (self.block_size // 2) - 2)
@@ -104,7 +106,7 @@ class GomokuGame:
                             self.grid[i][j] = 'W'
                             pygame.draw.circle(self.screen, (100, 100, 100), (i * self.block_size, j * self.block_size),
                                                (self.block_size // 2) - 2)
-                            pygame.draw.circle(self.screen, (255,255,255), (i * self.block_size, j * self.block_size),
+                            pygame.draw.circle(self.screen, (255, 255, 255), (i * self.block_size, j * self.block_size),
                                                (self.block_size // 2) - 4)
                             if self.full() and not self.won:
                                 text_surface = self.font.render("It's a Draw!", True, (255, 255, 255))

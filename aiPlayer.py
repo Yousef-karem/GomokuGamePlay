@@ -1,7 +1,13 @@
 import copy
+import math
+
 DEPTH = 2
 DIRECTIONS = [(1, 0), (0, 1), (1, 1), (1, -1)]
 N = 17
+HUMAN = 'W'
+AI = 'B'
+
+
 def get_available_moves(grid):
     moves = []
     for i in range(2, N):
@@ -87,12 +93,69 @@ def minimax(grid, depth, is_maximizing, player):
 def minimax_move(grid, is_white=True):
     player = 'W' if is_white else 'B'
     _, move = minimax(grid, DEPTH, True, player)
-    if(move is None):
+    if move is None:
         for m in get_available_moves(grid):
-            move=m
+            move = m
             break
     return move
 
 
-def alphabeta_move(grid, is_white):
-    return 4, 4
+def alphaBetaPruning(grid, depth, alpha, beta, isMaximizing, player):
+    if depth == 0:
+        return evaluate_board(grid, player), None
+
+    best_move = None
+    moves = get_available_moves(grid)
+
+    if not moves:
+        return 0, None
+
+    opponent = 'W' if player == 'B' else 'B'
+
+    if isMaximizing:
+        finalResult = -math.inf
+
+        for move in moves:
+            i, j = move
+            new_grid = copy.deepcopy(grid)  # Create a copy to avoid modifying the original
+            new_grid[i][j] = player
+
+            result, _ = alphaBetaPruning(new_grid, depth - 1, alpha, beta, False, player)
+
+            if result > finalResult:
+                finalResult = result
+                best_move = move
+
+            alpha = max(alpha, finalResult)
+            if beta <= alpha:
+                break
+
+    else:
+        finalResult = math.inf
+
+        for move in moves:
+            i, j = move
+            new_grid = copy.deepcopy(grid)  # Create a copy to avoid modifying the original
+            new_grid[i][j] = opponent
+
+            result, _ = alphaBetaPruning(new_grid, depth - 1, alpha, beta, True, player)
+
+            if result < finalResult:
+                finalResult = result
+                best_move = move
+
+            beta = min(beta, finalResult)
+            if beta <= alpha:
+                break
+
+    return finalResult, best_move
+
+
+def getAlphaBetaMove(grid, is_white):
+    player = 'W' if is_white else 'B'
+    _, move = alphaBetaPruning(grid, DEPTH, -math.inf, math.inf, True, player)
+    if move is None:
+        moves = get_available_moves(grid)
+        if moves:
+            move = moves[0]
+    return move
