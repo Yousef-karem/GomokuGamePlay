@@ -57,14 +57,14 @@ def draw_background():
     if background:
         screen.blit(background, (0, 0))
     else:
-        screen.fill((210, 180, 140))  # Tan color as fallback
+        screen.fill((210, 180, 140))  
 
 
 def draw_button(button):
     mouse_pos = pygame.mouse.get_pos()
     color = hover_color if button["rect"].collidepoint(mouse_pos) else button_color
     pygame.draw.rect(screen, color, button["rect"], border_radius=5)
-    pygame.draw.rect(screen, (0, 0, 0), button["rect"], 2, border_radius=5)  # Black border
+    pygame.draw.rect(screen, (0, 0, 0), button["rect"], 2, border_radius=5) 
 
     text_render = font.render(button["label"], True, text_color)
     text_rect = text_render.get_rect(center=button["rect"].center)
@@ -74,12 +74,11 @@ def draw_button(button):
 def draw_main_menu():
     draw_background()
 
-    # Draw title
     title = font_large.render("Gomoku Game with AI", True, (0, 0, 0))
     title_rect = title.get_rect(center=(WIDTH // 2, 120))
     screen.blit(title, title_rect)
 
-    # Draw buttons
+    
     for button in main_menu_buttons:
         draw_button(button)
 
@@ -89,22 +88,22 @@ def draw_main_menu():
 def draw_settings():
     draw_background()
 
-    # Draw title
+  
     title = font_large.render("Settings", True, (0, 0, 0))
     title_rect = title.get_rect(center=(WIDTH // 2, 80))
     screen.blit(title, title_rect)
 
-    # Draw board size section
+   
     board_size_text = font.render("Board Size:", True, (0, 0, 0))
     screen.blit(board_size_text, (WIDTH // 2 - 100, 180))
 
     for button in board_size_buttons:
-        # Highlight selected size
+      
         selected = button["value"] == board_size
         highlight_color = (144, 238, 144) if selected else (
             hover_color if button["rect"].collidepoint(pygame.mouse.get_pos()) else button_color)
         pygame.draw.rect(screen, highlight_color, button["rect"], border_radius=5)
-        pygame.draw.rect(screen, (0, 0, 0), button["rect"], 2, border_radius=5)  # Black border
+        pygame.draw.rect(screen, (0, 0, 0), button["rect"], 2, border_radius=5) 
 
         text_render = font.render(button["label"], True, text_color)
         text_rect = text_render.get_rect(center=button["rect"].center)
@@ -115,34 +114,32 @@ def draw_settings():
     screen.blit(algorithm_text, (WIDTH // 2 - 100, 300))
 
     for button in algorithm_buttons:
-        # Highlight selected algorithm
+        
         selected = button["value"] == ai_algorithm
         highlight_color = (144, 238, 144) if selected else (
             hover_color if button["rect"].collidepoint(pygame.mouse.get_pos()) else button_color)
         pygame.draw.rect(screen, highlight_color, button["rect"], border_radius=5)
-        pygame.draw.rect(screen, (0, 0, 0), button["rect"], 2, border_radius=5)  # Black border
-
+        pygame.draw.rect(screen, (0, 0, 0), button["rect"], 2, border_radius=5) 
         text_render = font.render(button["label"], True, text_color)
         text_rect = text_render.get_rect(center=button["rect"].center)
         screen.blit(text_render, text_rect)
 
-    # Draw AI depth section
     depth_text = font.render("AI Depth:", True, (0, 0, 0))
     screen.blit(depth_text, (WIDTH // 2 - 100, 400))
 
     for button in depth_buttons:
-        # Highlight selected depth
+       
         selected = button["value"] == ai_depth
         highlight_color = (144, 238, 144) if selected else (
             hover_color if button["rect"].collidepoint(pygame.mouse.get_pos()) else button_color)
         pygame.draw.rect(screen, highlight_color, button["rect"], border_radius=5)
-        pygame.draw.rect(screen, (0, 0, 0), button["rect"], 2, border_radius=5)  # Black border
+        pygame.draw.rect(screen, (0, 0, 0), button["rect"], 2, border_radius=5) 
 
         text_render = font.render(button["label"], True, text_color)
         text_rect = text_render.get_rect(center=button["rect"].center)
         screen.blit(text_render, text_rect)
 
-    # Draw back button
+    
     draw_button(back_button)
 
     pygame.display.flip()
@@ -170,9 +167,9 @@ def handle_main_menu_events(event):
                         # Ensure we reset the screen size properly
                         screen = pygame.display.set_mode((WIDTH, HEIGHT))
                         current_screen = "main_menu"
-                        return True  # Continue the main loop to show the menu
+                        return True
                     else:
-                        return False  # Exit the main loop (game was closed)
+                        return False 
     return True
 
 
@@ -180,32 +177,32 @@ def handle_settings_events(event):
     global current_screen, board_size, ai_algorithm, ai_depth
 
     if event.type == pygame.MOUSEBUTTONDOWN:
-        # Handle board size selection
+      
         for button in board_size_buttons:
             if button["rect"].collidepoint(event.pos):
                 board_size = button["value"]
                 return True
 
-        # Handle algorithm selection
+        
         for button in algorithm_buttons:
             if button["rect"].collidepoint(event.pos):
                 ai_algorithm = button["value"]
                 return True
 
-        # Handle depth selection
+     
         for button in depth_buttons:
             if button["rect"].collidepoint(event.pos):
                 ai_depth = button["value"]
                 return True
 
-        # Handle back button
+      
         if back_button["rect"].collidepoint(event.pos):
             current_screen = "main_menu"
             return True
     return True
 
 
-# Main game loop
+
 running = True
 while running:
     if current_screen == "main_menu":
