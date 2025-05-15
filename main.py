@@ -13,7 +13,6 @@ font = pygame.font.Font(None, 40)
 background = pygame.image.load("wood_background.jpg")
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
-# Button config
 button_color = (210, 180, 140)
 hover_color = (188, 143, 143)
 text_color = (0, 0, 0)
@@ -25,19 +24,6 @@ main_menu_buttons = [
     {"label": "Exit", "rect": pygame.Rect(WIDTH // 2 - 150, 415, 300, 60), "action": "exit"}
 ]
 
-# AI  buttons
-algorithm_buttons = [
-    {"label": "Minimax", "rect": pygame.Rect(WIDTH // 3 - 75, 350, 150, 50), "value": "minimax"},
-    {"label": "Alpha-Beta", "rect": pygame.Rect(2 * WIDTH // 3 - 75, 350, 150, 50), "value": "alpha-beta"}
-]
-
-# depth buttons
-depth_buttons = [
-    {"label": "1", "rect": pygame.Rect(WIDTH // 5 - 25, 450, 50, 50), "value": 1},
-    {"label": "2", "rect": pygame.Rect(2 * WIDTH // 5 - 25, 450, 50, 50), "value": 2},
-    {"label": "3", "rect": pygame.Rect(3 * WIDTH // 5 - 25, 450, 50, 50), "value": 3},
-    {"label": "4", "rect": pygame.Rect(4 * WIDTH // 5 - 25, 450, 50, 50), "value": 4}
-]
 back_button = {"label": "Back to Menu", "rect": pygame.Rect(WIDTH // 2 - 150, 520, 300, 60), "action": "main_menu"}
 
 

@@ -33,7 +33,7 @@ class GomokuGame:
         self.wood_background = pygame.transform.scale(self.wood_background, (self.width, self.height))
 
         self.running = True
-        self.turn = True  # True = White (Human or AI1), False = Black (AI or AI2)
+        self.turn = True
         self.won = False
         self.return_to_menu = False
 
@@ -157,7 +157,7 @@ class GomokuGame:
             color = hover_color if button["rect"].collidepoint(mouse_pos) else button_color
 
             pygame.draw.rect(self.screen, color, button["rect"], border_radius=5)
-            pygame.draw.rect(self.screen, (0, 0, 0), button["rect"], 2, border_radius=5)  # Black border
+            pygame.draw.rect(self.screen, (0, 0, 0), button["rect"], 2, border_radius=5)
 
             text = self.small_font.render(button["label"], True, text_color)
             text_rect = text.get_rect(center=button["rect"].center)
@@ -176,7 +176,7 @@ class GomokuGame:
                 color = (144, 238, 144)
 
             pygame.draw.rect(self.screen, color, button["rect"], border_radius=5)
-            pygame.draw.rect(self.screen, (0, 0, 0), button["rect"], 2, border_radius=5)  # Black border
+            pygame.draw.rect(self.screen, (0, 0, 0), button["rect"], 2, border_radius=5)
 
             text = self.small_font.render(button["label"], True, text_color)
             text_rect = text.get_rect(center=button["rect"].center)
@@ -202,7 +202,7 @@ class GomokuGame:
             pygame.draw.circle(self.screen, stone_color, (i * self.block_size, j * self.block_size),
                                (self.block_size // 2) - 4)
 
-            if self.check_five(i, j):
+            if self.evaluate('W' if self.turn else 'B') != 0:
                 self.won = True
             elif self.is_board_full():
                 self.won = True
@@ -261,14 +261,14 @@ class GomokuGame:
                         if (self.start <= i < self.end and self.start <= j < self.end and
                                 self.grid[i][j] == ' '):
 
-                            self.grid[i][j] = 'W'  # Human plays as White
+                            self.grid[i][j] = 'W'
 
                             pygame.draw.circle(self.screen, (100, 100, 100), (i * self.block_size, j * self.block_size),
                                                (self.block_size // 2) - 2)
                             pygame.draw.circle(self.screen, (255, 255, 255), (i * self.block_size, j * self.block_size),
                                                (self.block_size // 2) - 4)
 
-                            if self.check_five(i, j):
+                            if self.evaluate('W' if self.turn else 'B') != 0:
                                 self.won = True
                             elif self.is_board_full():
                                 self.won = True
@@ -289,7 +289,6 @@ class GomokuGame:
             pygame.display.flip()
             clock.tick(30)
 
-        # Restore original screen size when returning to menu
         if self.return_to_menu:
             pygame.display.set_mode(self.original_screen_size)
 

@@ -53,7 +53,7 @@ def evaluate_line(line, player):
 def evaluate_board(grid, player):
     total_score = 0
 
-    # Horizontal, vertical, and diagonal
+    # horizontal vertical diagonal
     for i in range(start, N):
         for j in range(start, N):
             for dx, dy in DIRECTIONS:
@@ -117,7 +117,7 @@ def alphaBetaPruning(grid, depth, alpha, beta, isMaximizing, player):
 
         for move in moves:
             i, j = move
-            new_grid = copy.deepcopy(grid)  # Create a copy to avoid modifying the original
+            new_grid = copy.deepcopy(grid)
             new_grid[i][j] = player
 
             result, _ = alphaBetaPruning(new_grid, depth - 1, alpha, beta, False, player)
@@ -135,7 +135,7 @@ def alphaBetaPruning(grid, depth, alpha, beta, isMaximizing, player):
 
         for move in moves:
             i, j = move
-            new_grid = copy.deepcopy(grid)  # Create a copy to avoid modifying the original
+            new_grid = copy.deepcopy(grid)
             new_grid[i][j] = opponent
 
             result, _ = alphaBetaPruning(new_grid, depth - 1, alpha, beta, True, player)
