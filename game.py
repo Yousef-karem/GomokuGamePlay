@@ -10,23 +10,20 @@ class GomokuGame:
         self.block_size = 30
         self.board_size = board_size
         self.n = board_size + 2
-
-
+        self.start = 3
+        self.end = board_size
         self.button_margin = 150
         self.width = (self.n * self.block_size) + self.button_margin
         self.height = self.n * self.block_size
-
 
         self.original_screen_size = pygame.display.get_surface().get_size()
 
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Gomoku")
 
-
         self.mode = mode
         self.ai_algorithm = ai_algorithm
         self.ai_depth = ai_depth
-
 
         self.grid = [[' ' for _ in range(self.n + 1)] for _ in range(self.n + 1)]
         self.font = pygame.font.Font(None, 36)
@@ -55,12 +52,6 @@ class GomokuGame:
         # AI vs AI
         self.ai_control_buttons = [
             {"label": "Start", "rect": pygame.Rect(button_x, 160, button_width, button_height), "action": "start"},
-            {"label": "Step",
-             "rect": pygame.Rect(button_x, 160 + button_height + button_spacing, button_width, button_height),
-             "action": "step"},
-            {"label": "Stop",
-             "rect": pygame.Rect(button_x, 160 + 2 * (button_height + button_spacing), button_width, button_height),
-             "action": "stop"},
         ]
         self.ai_auto_play = False
 
@@ -73,7 +64,6 @@ class GomokuGame:
             pygame.draw.line(self.screen, (0, 0, 0), (i, start_pos), (i, end_pos))
             pygame.draw.line(self.screen, (0, 0, 0), (start_pos, i), (end_pos, i))
 
-
         if self.board_size >= 13:
             star_points = []
             if self.board_size == 13:
@@ -82,9 +72,7 @@ class GomokuGame:
                 positions = [3, 7, 11]
             for x in positions:
                 for y in positions:
-
                     star_points.append((x + 2, y + 2))
-
 
             for x, y in star_points:
                 pygame.draw.circle(self.screen, (0, 0, 0), (x * self.block_size, y * self.block_size), 4)
@@ -101,8 +89,7 @@ class GomokuGame:
             count = 1
             nx, ny = x + dx[i], y + dy[i]
 
-
-            while 2 <= nx <= self.n - 2 and 2 <= ny <= self.n - 2 and self.grid[nx][ny] == c:
+            while self.start <= nx < self.end and self.start <= ny < self.end and self.grid[nx][ny] == c:
                 count += 1
                 if count == 5:
                     return True
@@ -112,8 +99,8 @@ class GomokuGame:
         return False
 
     def evaluate(self, c):
-        for i in range(2, self.n - 1):
-            for j in range(2, self.n - 1):
+        for i in range(self.start, self.end):
+            for j in range(self.start, self.end):
                 if self.grid[i][j] != ' ' and self.check_five(i, j):
                     return 1 if self.grid[i][j] == c else -1
         return 0
@@ -125,9 +112,8 @@ class GomokuGame:
             self.screen.fill((210, 180, 140))
         self.draw_grid()
 
-
-        for i in range(2, self.n - 1):
-            for j in range(2, self.n - 1):
+        for i in range(self.start, self.end):
+            for j in range(self.start, self.end):
                 if self.grid[i][j] != ' ':
                     if self.grid[i][j] == 'W':
 
@@ -141,7 +127,6 @@ class GomokuGame:
                                            (self.block_size // 2) - 2)
                         pygame.draw.circle(self.screen, (0, 0, 0), (i * self.block_size, j * self.block_size),
                                            (self.block_size // 2) - 4)
-
 
         turn_text = "White's Turn" if self.turn else "Black's Turn"
         if self.won:
@@ -157,10 +142,8 @@ class GomokuGame:
         text_rect.topleft = (10, 10)
         self.screen.blit(text_surface, text_rect)
 
-
         if self.mode == "ai_vs_ai":
             self.draw_ai_controls()
-
 
         self.draw_common_controls()
 
@@ -189,7 +172,6 @@ class GomokuGame:
             mouse_pos = pygame.mouse.get_pos()
             color = hover_color if button["rect"].collidepoint(mouse_pos) else button_color
 
-
             if button["action"] == "start" and self.ai_auto_play:
                 color = (144, 238, 144)
 
@@ -202,7 +184,6 @@ class GomokuGame:
 
     def ai_move(self):
         if self.mode == "ai_vs_ai":
-
             if self.turn:
                 i, j = getAlphaBetaMove(self.grid, is_white=True)
             else:
@@ -212,7 +193,7 @@ class GomokuGame:
             algo_func = getAlphaBetaMove if self.ai_algorithm == "alpha-beta" else minimax_move
             i, j = algo_func(self.grid, is_white=self.turn)
 
-        if i is not None and j is not None and 2 <= i <= self.n - 2 and 2 <= j <= self.n - 2 and self.grid[i][j] == ' ':
+        if i is not None and j is not None and self.start <= i < self.end and self.start <= j < self.end and self.grid[i][j] == ' ':
             self.grid[i][j] = 'W' if self.turn else 'B'
 
             stone_color = (255, 255, 255) if self.turn else (0, 0, 0)
@@ -221,18 +202,16 @@ class GomokuGame:
             pygame.draw.circle(self.screen, stone_color, (i * self.block_size, j * self.block_size),
                                (self.block_size // 2) - 4)
 
-
             if self.check_five(i, j):
                 self.won = True
             elif self.is_board_full():
                 self.won = True
 
-
             self.turn = not self.turn
 
     def is_board_full(self):
-        for i in range(2, self.n - 1):
-            for j in range(2, self.n - 1):
+        for i in range(self.start, self.end):
+            for j in range(self.start, self.end):
                 if self.grid[i][j] == ' ':
                     return False
         return True
@@ -242,10 +221,6 @@ class GomokuGame:
             if button["rect"].collidepoint(pos):
                 if button["action"] == "start":
                     self.ai_auto_play = True
-                elif button["action"] == "stop":
-                    self.ai_auto_play = False
-                elif button["action"] == "step" and not self.won:
-                    self.ai_move()
                 return True
         return False
 
@@ -273,7 +248,6 @@ class GomokuGame:
                 if event.type == pygame.QUIT:
                     self.running = False
 
-
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
                     if self.handle_common_control_click(event.pos):
@@ -284,27 +258,23 @@ class GomokuGame:
                         x, y = event.pos
                         i, j = round(x / self.block_size), round(y / self.block_size)
 
-
-                        if (2 <= i <= self.n - 2 and 2 <= j <= self.n - 2 and
+                        if (self.start <= i < self.end and self.start <= j < self.end and
                                 self.grid[i][j] == ' '):
 
                             self.grid[i][j] = 'W'  # Human plays as White
-
 
                             pygame.draw.circle(self.screen, (100, 100, 100), (i * self.block_size, j * self.block_size),
                                                (self.block_size // 2) - 2)
                             pygame.draw.circle(self.screen, (255, 255, 255), (i * self.block_size, j * self.block_size),
                                                (self.block_size // 2) - 4)
 
-
                             if self.check_five(i, j):
                                 self.won = True
                             elif self.is_board_full():
                                 self.won = True
 
-
                             self.turn = not self.turn
-
+                            pygame.display.flip()
 
             if not self.won:
                 if self.mode == "ai_vs_ai" and self.ai_auto_play:
@@ -314,9 +284,7 @@ class GomokuGame:
 
                     self.ai_move()
 
-
             self.draw_board()
-
 
             pygame.display.flip()
             clock.tick(30)
@@ -324,6 +292,5 @@ class GomokuGame:
         # Restore original screen size when returning to menu
         if self.return_to_menu:
             pygame.display.set_mode(self.original_screen_size)
-
 
         return self.return_to_menu

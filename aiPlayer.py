@@ -1,8 +1,10 @@
 import copy
 import math
+import random
 
 DEPTH = 2
 DIRECTIONS = [(1, 0), (0, 1), (1, 1), (1, -1)]
+start = 3
 N = 17
 HUMAN = 'W'
 AI = 'B'
@@ -10,23 +12,25 @@ AI = 'B'
 
 def get_available_moves(grid):
     moves = []
-    for i in range(2, N):
-        for j in range(2, N):
+    for i in range(start, N):
+        for j in range(start, N):
             if grid[i][j] == ' ':
                 for dx, dy in DIRECTIONS:
                     for d in [-1, 1]:
                         ni, nj = i + dx * d, j + dy * d
-                        if 2 <= ni < N and 2 <= nj < N and grid[ni][nj] != ' ':
+                        if start <= ni < N and start <= nj < N and grid[ni][nj] != ' ':
                             moves.append((i, j))
                             break
                     else:
                         continue
                     break
     if not moves:
-        for i in range(2, N):
-            for j in range(2, N):
-                if grid[i][j] == ' ':
-                    moves.append((i, j))
+        count = 0
+        while count < 10:
+            i, j = random.randint(start, N), random.randint(start, N)
+            if grid[i][j] == ' ':
+                moves.append((i, j))
+                count += 1
     return moves
 
 
@@ -50,13 +54,13 @@ def evaluate_board(grid, player):
     total_score = 0
 
     # Horizontal, vertical, and diagonal
-    for i in range(2, N):
-        for j in range(2, N):
+    for i in range(start, N):
+        for j in range(start, N):
             for dx, dy in DIRECTIONS:
                 line = []
                 for k in range(5):
                     ni, nj = i + dx * k, j + dy * k
-                    if 2 <= ni <= N and 2 <= nj <= N:
+                    if start <= ni < N and start <= nj < N:
                         line.append(grid[ni][nj])
                 if len(line) == 5:
                     total_score += evaluate_line(line, player)
@@ -93,10 +97,6 @@ def minimax(grid, depth, is_maximizing, player):
 def minimax_move(grid, is_white=True):
     player = 'W' if is_white else 'B'
     _, move = minimax(grid, DEPTH, True, player)
-    if move is None:
-        for m in get_available_moves(grid):
-            move = m
-            break
     return move
 
 
@@ -154,8 +154,4 @@ def alphaBetaPruning(grid, depth, alpha, beta, isMaximizing, player):
 def getAlphaBetaMove(grid, is_white):
     player = 'W' if is_white else 'B'
     _, move = alphaBetaPruning(grid, DEPTH, -math.inf, math.inf, True, player)
-    if move is None:
-        moves = get_available_moves(grid)
-        if moves:
-            move = moves[0]
     return move
