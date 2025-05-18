@@ -190,7 +190,7 @@ class GomokuGame:
                 i, j = minimax_move(self.grid, is_white=False)
         else:
 
-            algo_func = getAlphaBetaMove if self.ai_algorithm == "alpha-beta" else minimax_move
+            algo_func = minimax_move
             i, j = algo_func(self.grid, is_white=self.turn)
 
         if i is not None and j is not None and self.start <= i < self.end and self.start <= j < self.end and self.grid[i][j] == ' ':
